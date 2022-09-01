@@ -1,0 +1,27 @@
+# Maintainer: EndeavourOS-Team <info@endeavouros.com>
+
+pkgname=eos-downgrade
+pkgdesc="Downwgrade EndeavourOS packages (currently alpha quality)."
+pkgver=0.3
+pkgrel=1
+arch=('any')
+license=('GPL')
+depends=(
+    bash
+    fzf
+)
+optdepends=(
+    'downgrade: for downgrading Arch packages'
+)
+url=https://github.com/endeavouros-team/PKGBUILDS/tree/master/$pkgname
+_url="https://raw.githubusercontent.com/endeavouros-team/PKGBUILDS/master/$pkgname"
+
+source=(
+    $_url/$pkgname
+)
+
+sha512sums=('c5501947da6a8aea8ef853eac7b7607057cd4fd33794240325da1e5af5326d1193b9e2e74ab9f8223cf257147370e318ace1ac9d896e26182afd029f56985690')
+
+package() {
+  install -Dm755 $pkgname                $pkgdir/usr/bin/$pkgname
+}

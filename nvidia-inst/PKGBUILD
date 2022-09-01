@@ -1,0 +1,35 @@
+# Original Maintainer: Gustau Castells <karasu@antergos.com>
+# Maintainer: manuel at endeavouros.com
+# Contributor: joekamprad <joekamprad@endeavouros.com>
+
+pkgname=nvidia-inst
+pkgver=1.2
+pkgrel=1
+pkgdesc="Script to setup nvidia drivers (dkms version) in EndeavourOS"
+url=https://github.com/endeavouros-team/PKGBUILDS/tree/master/$pkgname
+_url=https://raw.githubusercontent.com/endeavouros-team/PKGBUILDS/master/$pkgname
+arch=('any')
+license=('GPL2')
+depends=(
+  nvidia-installer-common
+  dkms
+)
+
+optdepends=(
+  "linux-headers: for $pkgname with kernel linux"
+  "linux-lts-headers: for $pkgname with kernel linux-lts"
+  "linux-hardened-headers: for $pkgname with kernel linux-hardened"
+  "linux-zen-headers: for $pkgname with kernel linux-zen"
+)
+
+source=(
+  $_url/$pkgname
+  $_url/$pkgname.bash-completion
+)
+sha512sums=('d9c6842c445f6ef96fca521d47267b386a58d553d46c9a6bfa4ed4b28bc3ac46b84303fb20af94aef5f6de27d08dd41ce9e20d1458b0224ebf001a3edb98e62a'
+            'b8857ff98870ac8cff78e31c660bde3b7308752ee4e6547682340866ee59f5801f09ede41e490380a40926536f47259f5d347fd59e8e2ffa67a8cb57f07c44e6')
+
+package() {
+  install -Dm755 $pkgname                         $pkgdir/usr/bin/$pkgname
+  install -Dm644 $pkgname.bash-completion         $pkgdir/usr/share/bash-completion/completions/$pkgname
+}

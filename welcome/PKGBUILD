@@ -1,0 +1,66 @@
+# Maintainer: EndeavourOS-Team <info@endeavouros.com>
+
+pkgname=welcome
+pkgdesc="Welcome greeter for new EndeavourOS users."
+pkgver=3.33
+pkgrel=1
+arch=('any')
+license=('GPL')
+depends=(
+    systemd eos-bash-shared eos-translations
+    eos-quickstart
+)
+optdepends=(
+  'translate-shell: for generating a language translation for the User Interface'
+  'reflector-simple: for the Update Mirrors button'
+  'kdiff3: alternative app for pacdiff to use'
+  'meld: alternative app for pacdiff to use'
+  'diffuse: alternative app for pacdiff to use'
+  'vim: alternative app for pacdiff to use'
+)
+
+url=https://github.com/endeavouros-team/PKGBUILDS/tree/master/$pkgname
+_url="https://raw.githubusercontent.com/endeavouros-team/PKGBUILDS/master/$pkgname"
+
+source=(
+  $_url/$pkgname
+  $_url/$pkgname.desktop
+  $_url/wallpaper-once
+  $_url/wallpaper-once.desktop
+  $_url/eos-kill-yad-zombies
+  $_url/welcome-dnd
+  $_url/eos-install-mode-run-calamares
+  $_url/arm-eos-welcome-installer
+)
+sha512sums=('9801e9228d2e61d233bb5400e6c1c9ba5505a254a98db28f837520a94230bd071242f089f409ea1c95e1e02cfa144e0ff92cedd8b4d316ac292639dd5e1cbd11'
+            'fc360cf63894772bbc75f41d5b5f312ac4e70afb43bc081b63e3d8db6b8c9a1f0e08fa5a3fdff840f8064c883dda1d3f16328bfc8aa5b4a18e8adf83b93174a0'
+            '66977e3853538a25a7f1530ab34e91749ec4890ad03ac7d80e49fe1e0bdfca114ee0cff795d1a5fb4569c7c395d78b07aadc161a70e12c6546086a18f9e47db7'
+            'a193a605d95d837db568dab2feb074c035bea12bc7b08a39a7be3b075dd063cd05fb46b4bde5c86f81a26456c0aab3b0b834cb1ffd88820095a14291b4e059a5'
+            '90dfc1f08a428787305d72a2e439a377aee0bc095fcb0a2efb4245a15285d4b96b5e0ac644c02f27ab68aebbfc5c64e6ab7d733d9db8952d2999d589410d3b9e'
+            '9f0cd5edabf93439656046c60dc6a29f439a9d8b7afab8ec03b9470321ba98fc53b927944e2f68b5b152c150cca76913490eaab4256a5699da5960f860d81e81'
+            '228211b05294b4cba0ee8f368eb2cf53456f4722ae2d88bb06d3f8601185191483024b6170dcd22857a431a33a7b88b7a814f24e0b9402d3d0def1eff8372aab'
+            'e59f15450f0d7e87c2c3db41531be9e008c4dabaae23c4ee73a6575893696eba9e83d4b16f5f503537b0f498e8467bc29858ebf775d035ca737b58b6ecd6e2aa')
+package() {
+  install -d $pkgdir/usr/share/endeavouros/scripts
+  install -Dm755 $pkgname                 $pkgdir/usr/share/endeavouros/scripts/$pkgname
+  install -Dm755 wallpaper-once           $pkgdir/usr/share/endeavouros/scripts/wallpaper-once
+
+  install -d $pkgdir/usr/bin
+  ln -s /usr/share/endeavouros/scripts/$pkgname $pkgdir/usr/bin/eos-$pkgname
+
+  install -Dm755 eos-kill-yad-zombies           $pkgdir/usr/bin/eos-kill-yad-zombies
+  install -Dm755 welcome-dnd                    $pkgdir/usr/bin/welcome-dnd
+  install -Dm755 eos-install-mode-run-calamares $pkgdir/usr/bin/eos-install-mode-run-calamares
+  install -Dm755 arm-eos-welcome-installer      $pkgdir/usr/bin/arm-eos-welcome-installer
+
+  install -d $pkgdir/etc/xdg/autostart
+  install -Dm644 wallpaper-once.desktop   $pkgdir/etc/xdg/autostart/wallpaper-once.desktop
+  install -Dm644 $pkgname.desktop         $pkgdir/etc/xdg/autostart/$pkgname.desktop      # no --once
+
+  install -d $pkgdir/usr/share/applications
+  cp -a $pkgname.desktop $pkgname.desktop-enable
+  sed -i $pkgname.desktop-enable \
+      -e 's|^\(Exec=.* --startdelay.*\)$|#\1|' \
+      -e 's|^#\(Exec=.* --once.*\)$|\1|'
+  install -Dm644 $pkgname.desktop-enable         $pkgdir/usr/share/applications/$pkgname.desktop      # has --once
+}
